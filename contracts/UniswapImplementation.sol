@@ -413,7 +413,7 @@ library UniswapV2Library {
 contract ExampleOracleSimple {
     using FixedPoint for *;
 
-    uint public constant PERIOD = 24 hours;
+    uint public constant PERIOD = 24 seconds;
 
     IUniswapV2Pair pair1;
     IUniswapV2Pair pair2;
@@ -467,7 +467,7 @@ contract ExampleOracleSimple {
         require(reserve2 != 0 && reserve3 != 0, 'ExampleOracleSimple: NO_RESERVES'); // ensure that there's liquidity in the pair
     }
 
-    function update() public {
+    function update() external {
         (uint price0Cumulative, uint price1Cumulative, uint32 blockTimestamp) =
             UniswapV2OracleLibrary.currentCumulativePrices(address(pair1));
         uint32 timeElapsed = blockTimestamp - blockTimestampLast; // overflow is desired
@@ -495,11 +495,12 @@ contract ExampleOracleSimple {
     }
 
     // note this will always return 0 before update has been called successfully for the first time.
-    function getData() external returns (uint amount1, uint amount2) {
-
-        update();
+    function getData() external view returns (uint amount1, uint amount2, uint amount3, uint amount4) {
 
         amount1 = YFIprice0Average.mul(10**18).decode144();
         amount2 = SYFIprice0Average.mul(10**18).decode144();
+
+        amount3 = YFIprice1Average.mul(10**18).decode144();
+        amount4 = SYFIprice1Average.mul(10**18).decode144();
     }
 }
